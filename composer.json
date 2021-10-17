@@ -1,0 +1,41 @@
+{
+    "name": "amphp/dbus",
+    "homepage": "https://github.com/amphp/dbus",
+    "description": "Async DBus connector and message serializer and deserializer for Amp",
+    "keywords": [
+        "async",
+        "message",
+        "dbus",
+        "client"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Bob Weinand",
+            "email": "bobwei9@hotmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=8.1",
+        "amphp/socket": "v2.x-dev"
+    },
+    "require-dev": {
+        "amphp/php-cs-fixer-config": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "Amp\\Dbus\\": "src"
+        },
+        "files": [
+            "src/functions.php"
+        ]
+    },
+    "scripts": {
+        "check": [
+            "@cs"
+        ],
+        "cs": "php-cs-fixer fix -v --diff --dry-run",
+        "cs-fix": "php-cs-fixer fix -v --diff"
+    }
+}
