@@ -5,11 +5,11 @@ namespace Amp\Dbus;
 use Amp\Dbus\Message\Error;
 use Amp\Dbus\Message\MethodCall;
 use Amp\Dbus\Message\MethodReturn;
-use Amp\Deferred;
+use Amp\DeferredFuture;
 use Amp\Future;
 use Amp\Socket\ResourceSocket;
 use Amp\Socket\Socket;
-use function Amp\coroutine;
+use function Amp\async;
 use function Amp\Socket\connect;
 
 class Dbus
@@ -30,7 +30,7 @@ class Dbus
     {
         $this->parser = Decoder::parser();
 
-        $this->connectionReady = coroutine(function () use ($socket, $asUser) {
+        $this->connectionReady = async(function () use ($socket, $asUser) {
             if (is_string($socket)) {
                 $socket = connect($socket);
             }
@@ -117,9 +117,9 @@ class Dbus
             unset($this->messageBuffer[$key]);
             return $msg;
         }
-        $future = ($this->pendingReadDeferred[] = new Deferred)->getFuture();
+        $future = ($this->pendingReadDeferred[] = new DeferredFuture)->getFuture();
         if (!$this->backgroundReader) {
-            $this->backgroundReader = coroutine($this->backgroundReader(...));
+            $this->backgroundReader = async($this->backgroundReader(...));
         }
         return $future->await();
     }
@@ -165,9 +165,9 @@ class Dbus
             $message->sender = $this->connectionName;
         }
         $this->sendMessageInternal($message);
-        $future = ($this->pendingReplyDeferred[$message->serial] = new Deferred)->getFuture();
+        $future = ($this->pendingReplyDeferred[$message->serial] = new DeferredFuture)->getFuture();
         if (!$this->backgroundReader) {
-            $this->backgroundReader = coroutine($this->backgroundReader(...));
+            $this->backgroundReader = async($this->backgroundReader(...));
         }
         return $future->await();
     }
